@@ -1,3 +1,7 @@
+## NEXT
+
+* Fix for `blockquote` property not being applied in `MarkdownBody` widget.
+
 ## 0.7.6+2
 
 * Updates README to indicate that this package will be discontinued.

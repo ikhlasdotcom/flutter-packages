@@ -980,6 +980,23 @@ class MarkdownBuilder implements md.NodeVisitor {
   Widget _buildRichText(TextSpan text, {TextAlign? textAlign, String? key}) {
     //Adding a unique key prevents the problem of using the same link handler for text spans with the same text
     final Key k = key == null ? UniqueKey() : Key(key);
+
+    if (selectable && _isInBlockquote) {
+      return SizedBox(
+        width: double.infinity,
+        child: SelectableText.rich(
+          text,
+          textScaler: styleSheet.textScaler,
+          textAlign: textAlign ?? TextAlign.start,
+          onSelectionChanged: onSelectionChanged != null
+              ? (TextSelection selection, SelectionChangedCause? cause) =>
+                  onSelectionChanged!(text.text, selection, cause)
+              : null,
+          onTap: onTapText,
+          key: k,
+        ),
+      );
+    }
     if (selectable) {
       return SelectableText.rich(
         text,
@@ -991,6 +1008,16 @@ class MarkdownBuilder implements md.NodeVisitor {
             : null,
         onTap: onTapText,
         key: k,
+      );
+    } else if (_isInBlockquote) {
+      return SizedBox(
+        width: double.infinity,
+        child: Text.rich(
+          text,
+          textScaler: styleSheet.textScaler,
+          textAlign: textAlign ?? TextAlign.start,
+          key: k,
+        ),
       );
     } else {
       return Text.rich(
